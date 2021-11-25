@@ -1,5 +1,4 @@
-﻿using FastGithub.Configuration;
-using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -46,29 +45,13 @@ namespace FastGithub.DomainResolve
             }
         }
 
-
-        /// <summary>
-        /// 解析ip
-        /// </summary>
-        /// <param name="endPoint">节点</param>
-        /// <param name="cancellationToken"></param>
-        /// <returns></returns>
-        public async Task<IPAddress> ResolveAnyAsync(DnsEndPoint endPoint, CancellationToken cancellationToken = default)
-        {
-            await foreach (var address in this.ResolveAllAsync(endPoint, cancellationToken))
-            {
-                return address;
-            }
-            throw new FastGithubException($"解析不到{endPoint.Host}的IP");
-        }
-
         /// <summary>
         /// 解析域名
         /// </summary>
         /// <param name="endPoint">节点</param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        public async IAsyncEnumerable<IPAddress> ResolveAllAsync(DnsEndPoint endPoint, [EnumeratorCancellation] CancellationToken cancellationToken)
+        public async IAsyncEnumerable<IPAddress> ResolveAsync(DnsEndPoint endPoint, [EnumeratorCancellation] CancellationToken cancellationToken)
         {
             if (this.dnsEndPointAddress.TryGetValue(endPoint, out var addresses) && addresses.Length > 0)
             {
@@ -96,20 +79,22 @@ namespace FastGithub.DomainResolve
         /// </summary>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        public async Task TestAllEndPointsAsync(CancellationToken cancellationToken)
+        public async Task TestSpeedAsync(CancellationToken cancellationToken)
         {
-            foreach (var keyValue in this.dnsEndPointAddress)
+            foreach (var keyValue in this.dnsEndPointAddress.OrderBy(item => item.Value.Length))
             {
                 var dnsEndPoint = keyValue.Key;
                 var oldAddresses = keyValue.Value;
 
                 var newAddresses = await this.addressService.GetAddressesAsync(dnsEndPoint, oldAddresses, cancellationToken);
-                if (oldAddresses.SequenceEqual(newAddresses) == false)
-                {
-                    this.dnsEndPointAddress[dnsEndPoint] = newAddresses;
+                this.dnsEndPointAddress[dnsEndPoint] = newAddresses;
 
-                    var addressArray = string.Join(", ", newAddresses.Select(item => item.ToString()));
-                    this.logger.LogInformation($"{dnsEndPoint.Host}->[{addressArray}]");
+                var oldSegmentum = oldAddresses.Take(5);
+                var newSegmentum = newAddresses.Take(5);
+                if (oldSegmentum.SequenceEqual(newSegmentum) == false)
+                {
+                    var addressArray = string.Join(", ", newSegmentum.Select(item => item.ToString()));
+                    this.logger.LogInformation($"{dnsEndPoint.Host}:{dnsEndPoint.Port}->[{addressArray}]");
                 }
             }
         }
