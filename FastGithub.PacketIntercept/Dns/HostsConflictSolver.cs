@@ -44,28 +44,34 @@ namespace FastGithub.PacketIntercept.Dns
                 return;
             }
 
+            Encoding hostsEncoding;
             var hasConflicting = false;
             var hostsBuilder = new StringBuilder();
-            var lines = await File.ReadAllLinesAsync(hostsPath, cancellationToken);
-            foreach (var line in lines)
+            using (var fileStream = new FileStream(hostsPath, FileMode.Open, FileAccess.Read))
             {
-                if (this.IsConflictingLine(line))
+                using var streamReader = new StreamReader(fileStream);
+                while (streamReader.EndOfStream == false)
                 {
-                    hasConflicting = true;
-                    hostsBuilder.AppendLine($"# {line}");
+                    var line = await streamReader.ReadLineAsync();
+                    if (this.IsConflictingLine(line))
+                    {
+                        hasConflicting = true;
+                        hostsBuilder.AppendLine($"# {line}");
+                    }
+                    else
+                    {
+                        hostsBuilder.AppendLine(line);
+                    }
                 }
-                else
-                {
-                    hostsBuilder.AppendLine(line);
-                }
+                hostsEncoding = streamReader.CurrentEncoding;
             }
+
 
             if (hasConflicting == true)
             {
                 try
                 {
-                    File.Move(hostsPath, Path.ChangeExtension(hostsPath, ".bak"), overwrite: true);
-                    await File.WriteAllTextAsync(hostsPath, hostsBuilder.ToString(), cancellationToken);
+                    await File.WriteAllTextAsync(hostsPath, hostsBuilder.ToString(), hostsEncoding, cancellationToken);
                 }
                 catch (Exception ex)
                 {
@@ -89,9 +95,9 @@ namespace FastGithub.PacketIntercept.Dns
         /// </summary>
         /// <param name="line"></param>
         /// <returns></returns>
-        private bool IsConflictingLine(string line)
+        private bool IsConflictingLine(string? line)
         {
-            if (line.TrimStart().StartsWith("#"))
+            if (line == null || line.TrimStart().StartsWith("#"))
             {
                 return false;
             }
