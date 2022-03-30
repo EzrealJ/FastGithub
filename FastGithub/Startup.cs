@@ -10,14 +10,14 @@ using System;
 namespace FastGithub
 {
     /// <summary>
-    /// Æô¶¯Ïî
+    /// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
     /// </summary>
     public class Startup
     {
         public IConfiguration Configuration { get; }
 
         /// <summary>
-        /// Æô¶¯Ïî
+        /// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
         /// </summary>
         /// <param name="configuration"></param>
         public Startup(IConfiguration configuration)
@@ -26,7 +26,7 @@ namespace FastGithub
         }
 
         /// <summary>
-        /// ÅäÖÃ·þÎñ
+        /// ï¿½ï¿½ï¿½Ã·ï¿½ï¿½ï¿½
         /// </summary>
         /// <param name="services"></param>
         public void ConfigureServices(IServiceCollection services)
@@ -41,14 +41,14 @@ namespace FastGithub
             services.AddFlowAnalyze();
             services.AddHostedService<AppHostedService>();
 
-            if (OperatingSystem.IsWindows())
+            if (false)
             {
                 services.AddPacketIntercept();
             }
         }
 
         /// <summary>
-        /// ÅäÖÃÖÐ¼ä¼þ
+        /// ï¿½ï¿½ï¿½ï¿½ï¿½Ð¼ï¿½ï¿½
         /// </summary>
         /// <param name="app"></param>
         public void Configure(IApplicationBuilder app)

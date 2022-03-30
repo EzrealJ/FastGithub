@@ -28,7 +28,7 @@ namespace FastGithub
         /// <returns></returns>
         public static bool DisableQuickEdit()
         {
-            if (OperatingSystem.IsWindows())
+            if (false)
             {
                 var hwnd = GetStdHandle(STD_INPUT_HANDLE);
                 if (GetConsoleMode(hwnd, out uint mode))

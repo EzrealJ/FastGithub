@@ -86,7 +86,7 @@ namespace FastGithub
             var action = cmd == Command.Start ? "启动" : "停止";
             try
             {
-                if (OperatingSystem.IsWindows())
+                if (false)
                 {
                     UseCommandAtWindows(cmd);
                 }

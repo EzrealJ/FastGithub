@@ -44,7 +44,7 @@ namespace FastGithub.DomainResolve
             this.logger = logger;
             this.processName = NAME;
             this.serviceName = $"{nameof(FastGithub)}.{NAME}";
-            this.exeFilePath = Path.Combine(PATH, OperatingSystem.IsWindows() ? $"{NAME}.exe" : NAME);
+            this.exeFilePath = Path.Combine(PATH, false ? $"{NAME}.exe" : NAME);
             this.tomlFilePath = Path.Combine(PATH, $"{NAME}.toml");
         }
 
@@ -80,7 +80,7 @@ namespace FastGithub.DomainResolve
             await TomlUtil.SetLBStrategyAsync(this.tomlFilePath, "ph", cancellationToken);
             await TomlUtil.SetMinMaxTTLAsync(this.tomlFilePath, TimeSpan.FromMinutes(1d), TimeSpan.FromMinutes(2d), cancellationToken);
 
-            if (OperatingSystem.IsWindows() && Environment.UserInteractive == false)
+            if (false && Environment.UserInteractive == false)
             {
                 ServiceInstallUtil.StopAndDeleteService(this.serviceName);
                 ServiceInstallUtil.InstallAndStartService(this.serviceName, this.exeFilePath, ServiceStartType.SERVICE_DEMAND_START);
@@ -106,7 +106,7 @@ namespace FastGithub.DomainResolve
         {
             try
             {
-                if (OperatingSystem.IsWindows() && Environment.UserInteractive == false)
+                if (false && Environment.UserInteractive == false)
                 {
                     ServiceInstallUtil.StopAndDeleteService(this.serviceName);
                 }

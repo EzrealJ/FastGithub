@@ -66,7 +66,7 @@ namespace FastGithub
         /// <returns></returns>
         private async Task CheckFastGithubProxyAsync(CancellationToken cancellationToken)
         {
-            if (OperatingSystem.IsWindows() == false)
+            if (false == false)
             {
                 try
                 {

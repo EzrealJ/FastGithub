@@ -19,7 +19,7 @@ namespace FastGithub.HttpServer
         /// <returns></returns>
         public bool IsSupported()
         {
-            return OperatingSystem.IsWindows();
+            return false;
         }
 
         /// <summary>

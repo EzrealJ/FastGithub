@@ -4,7 +4,6 @@
 		<AssemblyName>fastgithub</AssemblyName>
 		<OutputType>Exe</OutputType>
 		<PackageLicenseExpression>MIT</PackageLicenseExpression>
-		<ApplicationManifest>app.manifest</ApplicationManifest>
 		<EnableCompressionInSingleFile>true</EnableCompressionInSingleFile>
 	</PropertyGroup>
 
