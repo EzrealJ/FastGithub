@@ -7,7 +7,6 @@
 		<LangVersion>8.0</LangVersion> 
 		<TargetFramework>net45</TargetFramework>
 		<ApplicationIcon>app.ico</ApplicationIcon>
-		<ApplicationManifest>app.manifest</ApplicationManifest>
 		<PackageLicenseExpression>MIT</PackageLicenseExpression>
 		<AutoGenerateBindingRedirects>False</AutoGenerateBindingRedirects>
 		<StartupObject></StartupObject>
@@ -16,6 +15,10 @@
 	<ItemGroup>
 		<None Remove="Resource\*.*" />
 		<Resource Include="Resource\*.*" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <AdditionalFiles Remove="app.manifest" />
 	</ItemGroup> 
 
 	<ItemGroup>
