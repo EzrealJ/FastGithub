@@ -66,8 +66,7 @@ namespace FastGithub
         /// <returns></returns>
         private async Task CheckFastGithubProxyAsync(CancellationToken cancellationToken)
         {
-            if (false == false)
-            {
+           
                 try
                 {
                     if (await this.UseFastGithubProxyAsync() == false)
@@ -80,7 +79,7 @@ namespace FastGithub
                 {
                     this.logger.LogWarning("尝试获取代理信息失败");
                 }
-            }
+            
         }
 
 

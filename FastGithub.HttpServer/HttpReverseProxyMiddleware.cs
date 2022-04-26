@@ -80,7 +80,7 @@ namespace FastGithub.HttpServer
             }
 
             // 未配置的域名，但仍然被解析到本机ip的域名
-            if (false && IsDomain(host.Host))
+            if (OperatingSystem.IsWindows() && IsDomain(host.Host))
             {
                 this.logger.LogWarning($"域名{host.Host}可能已经被DNS污染，如果域名为本机域名，请解析为非回环IP");
                 domainConfig = defaultDomainConfig;

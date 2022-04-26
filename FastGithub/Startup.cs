@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
+using Serilog;
 using System;
 
 namespace FastGithub
@@ -33,18 +34,13 @@ namespace FastGithub
         {
             services.Configure<AppOptions>(this.Configuration);
             services.Configure<FastGithubOptions>(this.Configuration.GetSection(nameof(FastGithub)));
-
             services.AddConfiguration();
             services.AddDomainResolve();
             services.AddHttpClient();
             services.AddReverseProxy();
             services.AddFlowAnalyze();
             services.AddHostedService<AppHostedService>();
-
-            if (false)
-            {
-                services.AddPacketIntercept();
-            }
+            
         }
 
         /// <summary>
@@ -58,7 +54,6 @@ namespace FastGithub
             {
                 appBuilder.UseHttpProxy();
             });
-
             app.MapWhen(context => context.Connection.LocalPort != httpProxyPort, appBuilder =>
             {
                 appBuilder.UseRequestLogging();

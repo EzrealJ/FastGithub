@@ -69,16 +69,8 @@ namespace FastGithub
                         kestrel.NoLimit();
                         kestrel.ListenHttpsReverseProxy();
                         kestrel.ListenHttpReverseProxy();
+                        kestrel.ListenHttpProxy();
 
-                        if (false)
-                        {
-                            kestrel.ListenSshReverseProxy();
-                            kestrel.ListenGitReverseProxy();
-                        }
-                        else
-                        {
-                            kestrel.ListenHttpProxy();
-                        }
                     });
                 });
         }

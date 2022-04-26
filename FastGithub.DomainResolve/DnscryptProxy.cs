@@ -47,7 +47,10 @@ namespace FastGithub.DomainResolve
             this.exeFilePath = Path.Combine(PATH, false ? $"{NAME}.exe" : NAME);
             this.tomlFilePath = Path.Combine(PATH, $"{NAME}.toml");
         }
-
+        private void LogErrorWindowsNoAdmin(Exception ex)
+        {
+            logger.LogError(ex, "处理服务异常，没有管理员权限时，这种情况是正常的");
+        }
         /// <summary>
         /// 启动dnscrypt-proxy
         /// </summary>
@@ -79,17 +82,7 @@ namespace FastGithub.DomainResolve
             await TomlUtil.SetLogLevelAsync(this.tomlFilePath, 6, cancellationToken);
             await TomlUtil.SetLBStrategyAsync(this.tomlFilePath, "ph", cancellationToken);
             await TomlUtil.SetMinMaxTTLAsync(this.tomlFilePath, TimeSpan.FromMinutes(1d), TimeSpan.FromMinutes(2d), cancellationToken);
-
-            if (false && Environment.UserInteractive == false)
-            {
-                ServiceInstallUtil.StopAndDeleteService(this.serviceName);
-                ServiceInstallUtil.InstallAndStartService(this.serviceName, this.exeFilePath, ServiceStartType.SERVICE_DEMAND_START);
-                this.process = Process.GetProcessesByName(this.processName).FirstOrDefault(item => item.SessionId == 0);
-            }
-            else
-            {
-                this.process = StartDnscryptProxy();
-            }
+            this.process = StartDnscryptProxy();
 
             if (this.process != null)
             {
@@ -106,9 +99,17 @@ namespace FastGithub.DomainResolve
         {
             try
             {
-                if (false && Environment.UserInteractive == false)
+                if (OperatingSystem.IsWindows() && Environment.UserInteractive == false)
                 {
-                    ServiceInstallUtil.StopAndDeleteService(this.serviceName);
+                    try
+                    {
+                        ServiceInstallUtil.StopAndDeleteService(this.serviceName);
+                    }
+                    catch (Exception ex)
+                    {
+
+                        LogErrorWindowsNoAdmin(ex);
+                    }
                 }
 
                 if (this.process != null && this.process.HasExited == false)

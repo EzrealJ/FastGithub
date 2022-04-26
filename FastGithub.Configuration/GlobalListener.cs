@@ -27,12 +27,12 @@ namespace FastGithub.Configuration
         /// <summary>
         /// http端口
         /// </summary>
-        public static int HttpPort { get; } = false ? GetAvailableTcpPort(80) : GetAvailableTcpPort(3880);
+        public static int HttpPort { get; } = OperatingSystem.IsWindows() ? GetAvailableTcpPort(80) : GetAvailableTcpPort(3880);
 
         /// <summary>
         /// https端口
         /// </summary>
-        public static int HttpsPort { get; } = false ? GetAvailableTcpPort(443) : GetAvailableTcpPort(38443);
+        public static int HttpsPort { get; } = OperatingSystem.IsWindows() ? GetAvailableTcpPort(443) : GetAvailableTcpPort(38443);
 
         /// <summary>
         /// 获取已监听的端口

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Serilog;
+using System;
 using System.Runtime.InteropServices;
 using System.Runtime.Versioning;
 
@@ -28,14 +29,21 @@ namespace FastGithub
         /// <returns></returns>
         public static bool DisableQuickEdit()
         {
-            if (false)
+            try
             {
-                var hwnd = GetStdHandle(STD_INPUT_HANDLE);
-                if (GetConsoleMode(hwnd, out uint mode))
+                if (OperatingSystem.IsWindows())
                 {
-                    mode &= ~ENABLE_QUICK_EDIT;
-                    return SetConsoleMode(hwnd, mode);
+                    var hwnd = GetStdHandle(STD_INPUT_HANDLE);
+                    if (GetConsoleMode(hwnd, out uint mode))
+                    {
+                        mode &= ~ENABLE_QUICK_EDIT;
+                        return SetConsoleMode(hwnd, mode);
+                    }
                 }
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "禁用快速编辑模式，没有管理员权限时，这种情况是正常的");
             }
 
             return false;
